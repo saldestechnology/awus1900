@@ -16,6 +16,8 @@
   and a native macOS menu-bar app with packaging, install, and uninstall scripts.
 - Added machine-readable `rtlscan --json` results with SSID bytes encoded as hex, plus
   `rtljoin --ssid-hex` and `--passphrase-stdin` for the app's credential-safe launch flow.
+- The menu-bar controller now scans every channel supported by `rtlscan` by default; an optional
+  channel list can narrow the scan.
 
 ### Verified
 
@@ -30,7 +32,8 @@
   WPA3 M1–M4, rejection of a corrupted EAPOL MIC, H2E derivation against an independent
   implementation, and protected management-frame replay handling.
 - `make package-macos` produced an arm64 app bundle; package, plist, and ad-hoc signature checks
-  passed. The bundle is not notarized and uses the Homebrew libraries present at build time.
+  passed, and `make -B -j4` built the C tools. The bundle is not notarized and uses the Homebrew
+  libraries present at build time.
 - The latest passive scan could not open the AWUS1900 (`No such device`), so the user-identified AP
   has not been matched to a current BSSID/channel and no association was attempted. The scan attempt
   transmitted no frames.
@@ -46,6 +49,8 @@
   the IPv4 bridge; a launchd daemon and privileged helper remain future work.
 - Firmware redistribution terms remain unchecked. The implementation uses the BSD-3-Clause side of
   rtw88-derived code; do not bundle the firmware until its terms are reviewed.
+- The repository has no `package.json`, so the requested `npm run lint`, `npm run typecheck`, and
+  `npm test` commands cannot run here.
 - A USB transfer failure during initialization has no recovery path. `rtlcap` does not run fresh IQK
   after changing channels, and `src/rtw/phy.c` retains one signed/unsigned compiler warning from
   upstream code.
