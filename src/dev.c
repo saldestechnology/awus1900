@@ -37,6 +37,12 @@ int rtl_open(struct rtw_dev *d, u16 vid, u16 pid)
 				if ((e->bmAttributes & 3) == LIBUSB_TRANSFER_TYPE_BULK &&
 				    !(e->bEndpointAddress & LIBUSB_ENDPOINT_IN) && d->num_out_ep < 4)
 					d->out_ep[d->num_out_ep++] = e->bEndpointAddress;
+				else if ((e->bmAttributes & 3) == LIBUSB_TRANSFER_TYPE_BULK &&
+					 (e->bEndpointAddress & LIBUSB_ENDPOINT_IN) && !d->in_ep)
+					d->in_ep = e->bEndpointAddress;
+				else if ((e->bmAttributes & 3) == LIBUSB_TRANSFER_TYPE_INTERRUPT &&
+					 (e->bEndpointAddress & LIBUSB_ENDPOINT_IN) && !d->int_ep)
+					d->int_ep = e->bEndpointAddress;
 			}
 			libusb_free_config_descriptor(cfg);
 		}
@@ -90,6 +96,31 @@ static int wr(struct rtw_dev *d, u32 addr, u32 val, u16 len)
 		return -1;
 	}
 	return 0;
+}
+
+int rtl_read8_checked(struct rtw_dev *d, u32 addr, u8 *value)
+{
+	u8 byte = 0;
+	int n;
+
+	if (!d || !d->h || !value)
+		return -EINVAL;
+	n = libusb_control_transfer(d->h, RTW_USB_CMD_READ, RTW_USB_CMD_REQ,
+				    addr & 0xffff, 0, &byte, 1, CTRL_TIMEOUT_MS);
+	if (n != 1)
+		return n < 0 ? n : LIBUSB_ERROR_IO;
+	*value = byte;
+	return 0;
+}
+
+int rtl_write8_checked(struct rtw_dev *d, u32 addr, u8 value)
+{
+	int ret;
+
+	if (!d || !d->h)
+		return -EINVAL;
+	ret = wr(d, addr, value, 1);
+	return ret ? LIBUSB_ERROR_IO : 0;
 }
 
 u8 rtw_read8(struct rtw_dev *d, u32 a)   { return rd(d, a, 1); }

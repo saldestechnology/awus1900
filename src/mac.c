@@ -74,6 +74,8 @@ int rtl_read_chip_info(struct rtw_dev *d)
 	d->hci.bulkout_num = d->num_out_ep;
 	d->hci.rpwm_addr = 0xfe58;
 	d->hci.cpwm_addr = 0xfe57;
+	/* Use the conservative worldwide power table until the caller selects a region. */
+	hal->txpwr_regd = RTW_REGD_WW;
 
 	hal->chip_version = rtw_read32(d, REG_SYS_CFG1);
 	hal->cut_version = BIT_GET_CHIP_VER(hal->chip_version);

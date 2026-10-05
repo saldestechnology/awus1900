@@ -2,5 +2,11 @@
 /refs/
 /usbprobe
 /rtlinit
+/rtlcap
+/rtlprobe
+/rtlscan
+/rtljoin
+/rtlusb3
 /target/
+/build/
 *.pcap

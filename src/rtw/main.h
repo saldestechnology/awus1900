@@ -1499,10 +1499,13 @@ struct rtw_dev {
 	struct rtw_fifo_conf fifo;
 	struct rtw_efuse efuse;
 	struct rtw_dm_info dm_info;
+	bool tx_regd_explicit;
 	struct rtw_path_div_stub { int dummy; } dm_path_div;
 	DECLARE_BITMAP(flags, NUM_OF_RTW_FLAGS);
 	struct { u8 last_box_num; u32 seq; } h2c;
 	bool need_rfk;
+	bool thermal_track_enabled;
+	u64 thermal_track_next_ms;
 };
 
 extern const struct rtw_chip_info rtw8814a_hw_spec;

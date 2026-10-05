@@ -12,13 +12,15 @@ int main(int argc, char **argv)
 {
 	struct rtw_dev d;
 	const char *fwpath = "refs/rtw88/firmware/rtw8814a_fw.bin";
-	int channel = 0, verbose = 0, rc;
+	int channel = 0, verbose = 0, bw = 20, rc;
 
 	for (int i = 1; i < argc; i++) {
 		if (!strcmp(argv[i], "--fw") && i + 1 < argc)
 			fwpath = argv[++i];
 		else if (!strcmp(argv[i], "--channel") && i + 1 < argc)
 			channel = atoi(argv[++i]);
+		else if (!strcmp(argv[i], "--bw") && i + 1 < argc)
+			bw = atoi(argv[++i]);
 		else if (!strcmp(argv[i], "-v"))
 			verbose = 1;
 	}
@@ -44,8 +46,11 @@ int main(int argc, char **argv)
 	}
 
 	if (channel) {
-		rc = rtl_set_channel(&d, channel, RTW_CHANNEL_WIDTH_20);
+		rc = rtl_set_channel(&d, channel, bw == 80 ? RTW_CHANNEL_WIDTH_80 :
+					      bw == 40 ? RTW_CHANNEL_WIDTH_40 : RTW_CHANNEL_WIDTH_20);
 		printf("set channel %d: %s\n", channel, rc ? "FAILED" : "ok");
+		rtl_prepare_rfk(&d);
+		printf("calibration (IQK) done\n");
 		for (int p = 0; p < 4; p++)
 			printf("  RF path %c reg 0x18 = 0x%05x\n", 'A' + p,
 			       rtw_read_rf(&d, p, 0x18, RFREG_MASK));
