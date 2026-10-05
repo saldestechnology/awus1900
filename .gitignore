@@ -1,0 +1,6 @@
+# reference clones (separate git repos) and build outputs
+/refs/
+/usbprobe
+/rtlinit
+/target/
+*.pcap
