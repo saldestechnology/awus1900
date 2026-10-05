@@ -9,4 +9,6 @@
 /rtlusb3
 /target/
 /build/
+/PLAN.md
+/HANDOFF.md
 *.pcap

@@ -14,6 +14,8 @@
   route and DNS configuration with restoration on clean shutdown.
 - Added opt-in thermal tracking and power correction, `rtlusb3` for explicit USB3 mode switching,
   and a native macOS menu-bar app with packaging, install, and uninstall scripts.
+- Added machine-readable `rtlscan --json` results with SSID bytes encoded as hex, plus
+  `rtljoin --ssid-hex` and `--passphrase-stdin` for the app's credential-safe launch flow.
 
 ### Verified
 
@@ -29,6 +31,9 @@
   implementation, and protected management-frame replay handling.
 - `make package-macos` produced an arm64 app bundle; package, plist, and ad-hoc signature checks
   passed. The bundle is not notarized and uses the Homebrew libraries present at build time.
+- The latest passive scan could not open the AWUS1900 (`No such device`), so the user-identified AP
+  has not been matched to a current BSSID/channel and no association was attempted. The scan attempt
+  transmitted no frames.
 
 ### Outstanding validation and limitations
 
